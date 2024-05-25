@@ -1,0 +1,25 @@
+# ninja log v5
+16	8268	7383213160830078	CMakeFiles/SemesterProject.dir/main.cpp.obj	40db074e9a5343f6
+5452	5688	7383223087655883	SemesterProject.exe	ab688c7c2520dea
+6	576	7383451967030077	build.ninja	15a71b094e04c05e
+13	5449	7383223085321240	CMakeFiles/SemesterProject.dir/LMS.cpp.obj	7a425fab52f4d6ce
+19	3329	7383469852689172	CMakeFiles/SemesterProject.dir/LMS.cpp.obj	7a425fab52f4d6ce
+3332	4466	7383469863840092	SemesterProject.exe	ab688c7c2520dea
+21	1899	7383495954177507	CMakeFiles/SemesterProject.dir/LMS.cpp.obj	7a425fab52f4d6ce
+1901	2220	7383495957381445	SemesterProject.exe	ab688c7c2520dea
+29	1363	7383496128306033	CMakeFiles/SemesterProject.dir/LMS.cpp.obj	7a425fab52f4d6ce
+1373	1639	7383496131013683	SemesterProject.exe	ab688c7c2520dea
+14	1457	7383497394669521	CMakeFiles/SemesterProject.dir/LMS.cpp.obj	7a425fab52f4d6ce
+1458	1718	7383497397232753	SemesterProject.exe	ab688c7c2520dea
+24	1663	7383497786306056	CMakeFiles/SemesterProject.dir/LMS.cpp.obj	7a425fab52f4d6ce
+1665	1912	7383497788699195	SemesterProject.exe	ab688c7c2520dea
+12	1230	7383499337063440	CMakeFiles/SemesterProject.dir/LMS.cpp.obj	7a425fab52f4d6ce
+1231	1454	7383499339237650	SemesterProject.exe	ab688c7c2520dea
+12	1414	7383503242056132	CMakeFiles/SemesterProject.dir/LMS.cpp.obj	7a425fab52f4d6ce
+1415	1821	7383503245845124	SemesterProject.exe	ab688c7c2520dea
+36	1347	7383505660167024	CMakeFiles/SemesterProject.dir/LMS.cpp.obj	7a425fab52f4d6ce
+1350	1644	7383505663124626	SemesterProject.exe	ab688c7c2520dea
+35	1399	7383506483149505	CMakeFiles/SemesterProject.dir/LMS.cpp.obj	7a425fab52f4d6ce
+1400	1629	7383506485348902	SemesterProject.exe	ab688c7c2520dea
+27	1360	7383506812354118	CMakeFiles/SemesterProject.dir/LMS.cpp.obj	7a425fab52f4d6ce
+1361	1655	7383506815221561	SemesterProject.exe	ab688c7c2520dea
