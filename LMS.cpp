@@ -1,6 +1,6 @@
-//Library Management System developed by 'M. Haseeb Amjad'
+//Library Management System developed by 'M. Haseeb Amjad'.
 
-#include <iostream>
+#include <iostream> // For input/output.
 #include <cstdlib> // For exit() function
 
 using namespace std;
@@ -10,6 +10,7 @@ protected:
     string username;
     string password;
 
+public:
     //Default Constructor.
     User () = default;
 
@@ -40,73 +41,6 @@ protected:
 
 };
 
-
-//Inheriting the User class.
-class Student : User{
-public:
-
-    //Parametrized Constructor.
-    Student (string username, string password) : User(username, password) {};
-
-    //Destructor.
-    ~Student () = default;
-
-    //Implement the pure virtual function login.
-    bool login(string uname, string pwd) override {
-        return (username == uname && password == pwd);
-    }
-
-    //Setters.
-    void setUsername(string username) {
-        this->username = username;
-    }
-
-    void setPassword(string password) {
-        this->password = password;
-    }
-
-    //Getters.
-    string getUsername() {
-        return username;
-    }
-
-    string getPassword() {
-        return password;
-    }
-
-    //Additional Methods for Student Class.
-    void borrowBook() {
-        //Implementation of borrowBook.
-    }
-
-    void returnBook() {
-        //Implementation of returnBook.
-    }
-
-    void displayBooks() {
-        //Implementation of displayBooks.
-    }
-
-    void displayProfile() {
-        cout<<"Displaying User Profile..."<<endl;
-        cout<<"Username: "<<username<<endl;
-        cout<<"Password: "<<password<<endl;
-    }
-
-    void changePassword() {
-        string newPassword;
-        cout<<"Enter New Password: ";
-        cin>>newPassword;
-
-        if (newPassword.length() < 8) {
-            cout << "Password must be atleast 8 characters long." << endl;
-            exit(EXIT_FAILURE);
-        }
-
-        setPassword(newPassword);
-        cout<<"Password Changed Successfully."<<endl;
-    }
-};
 
 class Book {
 private:
@@ -225,6 +159,7 @@ public:
         cout<<"Book not found.";
     }
 
+
     //Display all Books.
     void displayBooks() {
         if (!head) {
@@ -243,6 +178,133 @@ public:
 
 
 
+//Inheriting the User class.
+class Student : User{
+private:
+    Library library;
+
+public:
+
+    //Parametrized Constructor.
+    Student (string username, string password) : User(username, password) {};
+
+    //Destructor.
+    ~Student () = default;
+
+    //Implement the pure virtual function login.
+    bool login(string uname, string pwd) override {
+        return (username == uname && password == pwd);
+    }
+
+    //Setters.
+    void setUsername(string username) {
+        this->username = username;
+    }
+
+    void setPassword(string password) {
+        this->password = password;
+    }
+
+    //Getters.
+    string getUsername() {
+        return username;
+    }
+
+    string getPassword() {
+        return password;
+    }
+
+
+
+    //Additional Methods for Student Class.
+    void borrowBook() {
+        string title;
+        cout<<"Enter name of the Book: ";
+        cin>>title;
+
+        string author;
+        cout<<"Enter name of the Author: ";
+        cin>>author;
+
+        int year;
+        cout<<"Enter the year of publication: ";
+        cin>>year;
+
+        if (title.empty()) {
+            cout << "Title can't be empty." << endl;
+            exit(EXIT_FAILURE);
+        }
+
+        if (author.empty()) {
+            cout << "Author name can't be empty." << endl;
+            exit(EXIT_FAILURE);
+        }
+
+        if (year< 1900 || year > 2024) {
+            cout << "Year must be of from 1900-2024." << endl;
+            exit(EXIT_FAILURE);
+        }
+
+        library.borrowBook(title, author, year);
+    }
+
+    void returnBook() {
+        string title;
+        cout<<"Enter name of the Book: ";
+        cin>>title;
+
+        string author;
+        cout<<"Enter name of the Author: ";
+        cin>>author;
+
+        int year;
+        cout<<"Enter the year of publication: ";
+        cin>>year;
+
+        if (title.empty()) {
+            cout << "Title can't be empty." << endl;
+            exit(EXIT_FAILURE);
+        }
+
+        if (author.empty()) {
+            cout << "Author name can't be empty." << endl;
+            exit(EXIT_FAILURE);
+        }
+
+        if (year< 1900 || year > 2024) {
+            cout << "Year must be of from 1900-2024." << endl;
+            exit(EXIT_FAILURE);
+        }
+
+        library.returnBook(title, author, year);
+    }
+
+    void displayBooks() {
+        library.displayBooks();
+    }
+
+    void displayProfile() {
+        cout<<"Displaying User Profile..."<<endl;
+        cout<<"Username: "<<username<<endl;
+        cout<<"Password: "<<password<<endl;
+    }
+
+    void changePassword() {
+        string newPassword;
+        cout<<"Enter New Password: ";
+        cin>>newPassword;
+
+        if (newPassword.length() < 8) {
+            cout << "Password must be atleast 8 characters long." << endl;
+            exit(EXIT_FAILURE);
+        }
+
+        setPassword(newPassword);
+        cout<<"Password Changed Successfully."<<endl;
+    }
+};
+
+
 int main () {
-    
+
 };
