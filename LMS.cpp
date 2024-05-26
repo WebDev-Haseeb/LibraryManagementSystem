@@ -5,6 +5,7 @@
 #include <cstdlib> // For exit() function.
 #include <string> // For importing string.
 #include <windows.h> // For Windows API.
+#include <conio.h> // For getch() function.
 
 using namespace std;
 
@@ -206,6 +207,28 @@ public:
         cout<<"Book not found.\n";
     }
 
+    //Method to Search Book.
+    void searchBook(string& title) {
+        if (!head) {
+            cout<<"Library is empty.\n";
+            return;
+        }
+
+        Book* temp = head;
+        while (temp) {
+            if (temp->getTitle() == title) {
+                cout<<"Book found: "<<endl;
+                cout<<"  Title: "<<temp->getTitle()<<endl;
+                cout<<"  Author: "<<temp->getAuthor()<<endl;
+                cout<<"  Year: "<<temp->getYear()<<endl;
+                return;
+            }
+            temp = temp -> next;
+        }
+
+        cout<<"No Book found with this title...\n";
+    }
+
 
     //Display all Books.
     void displayBooks() {
@@ -324,9 +347,23 @@ public:
             return;
         }
 
-
         library.returnBook(title, author, year);
         cout<<"The Book has been Returned."<<endl;
+    }
+
+    void searchBook() {
+        string title;
+        cin.ignore();
+        
+        cout<<"Enter title of the Book: ";
+        getline(cin, title);
+
+        if (title.empty()) {
+            cout<<"Title can't be empty.\n";
+            return;
+        }
+
+        library.searchBook(title);
     }
 
     void displayBooks() {
@@ -358,10 +395,11 @@ void displayMainMenu() {
 
     cout << "1. Borrow a Book" << endl;
     cout << "2. Return a Book" << endl;
-    cout << "3. Display all Books" << endl;
-    cout << "4. Display Profile Info" << endl;
-    cout << "5. Return to Main Menu" << endl;
-    cout << "6. Exit" << endl;
+    cout << "3. Search a Book" << endl;
+    cout << "4. Display all Books" << endl;
+    cout << "5. Display Profile Info" << endl;
+    cout << "6. Return to Main Menu" << endl;
+    cout << "7. Exit" << endl;
     cout << "---------------------------------------" << endl;
     cout << "Enter your choice: ";
 };
@@ -403,23 +441,28 @@ int main() {
             break;
 
             case 3:
-                student.displayBooks();
+                student.searchBook();
             break;
 
             case 4:
-                student.displayProfile();
+                student.displayBooks();
             break;
 
             case 5:
-                cout << "Returning to Main Menu..." << endl;
+                student.displayProfile();
             break;
 
             case 6:
+                cout << "Returning to Main Menu..." << endl;
+            break;
+
+            case 7:
                 cout << "Exiting program..." << endl;
             return EXIT_SUCCESS;
 
             default:
                 cout << "Invalid choice. Please try again." << endl;
         }
+        getch(); // To hold the screen until a key is pressed.
     }
 }
