@@ -1,47 +1,93 @@
 //Library Management System developed by 'M. Haseeb Amjad'.
+//The default userame and password is 'student' and 'student123' respectively.
 
 #include <iostream> // For input/output.
-#include <cstdlib> // For exit() function
+#include <cstdlib> // For exit() function.
+#include <string> // For importing string.
+#include <windows.h> // For Windows API.
 
 using namespace std;
 
+void gotoxy(int x, int y) {
+    COORD coord;
+    coord.X = x;
+    coord.Y = y;
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+
+void setColor(int textColor, int bgColor) {
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole, (bgColor << 4) | textColor);
+}
+
+void loading() {
+    int j;
+    gotoxy(32, 20);
+    cout << "Loading.......";
+    gotoxy(0, 22);
+    for (j = 0; j <= 167; j++) {
+        cout << (char)219;
+        Sleep(10);
+    }
+    Sleep(1000);
+    system("cls");
+}
+
+
+//Abstract User Class.
 class User {
 protected:
     string username;
     string password;
 
 public:
-    //Default Constructor.
-    User () = default;
+    // Default Constructor.
+    User() = default;
 
-    //Parameterized Constructor.
-    User (string username, string password) {
-
-        //validation of Credentails.
-        if (username.length() < 5) {
-            cout << "Username must be atleast 5 characters long." << endl;
-            exit(EXIT_FAILURE);
-        }
-
-        if (password.length() < 8) {
-            cout << "Password must be atleast 8 characters long." << endl;
-            exit(EXIT_FAILURE);
-        }
-
-        //Setting the credentials.
-        this->username = username;
-        this->password = password;
+    // Credentials Validation.
+    bool isValidUsername(string uname) {
+        return (uname == "student");
     }
 
-    //Destructor.
-    ~User () {}
+    bool isValidPassword(string pwd) {
+        return (pwd == "student123");
+    }
 
-    //Abstract Method.
-    virtual bool login(string username, string password) = 0;
+    // Method to set Username and Password.
+    void setCredentials() {
+        string uname, pwd;
+        cout << "\n\n\n===================================================" << endl;
+        cout << "       Welcome to the Library Management System!" << endl;
+        cout << "=====================================================\n" << endl;
 
+        cout << "Enter Username: ";
+        cin >> uname;
+        cout<< endl;
+
+        if (isValidUsername(uname)) {
+            this->username = uname;
+        } else {
+            cout << "Invalid Username."<< endl;
+            exit(EXIT_FAILURE);
+        }
+
+        cout << "Enter Password: ";
+        cin >> pwd;
+
+        if (isValidPassword(pwd)) {
+            this->password = pwd;
+        } else {
+            cout << "Invalid Password." << endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    // Abstract Method.
+    virtual bool login() = 0;
 };
 
 
+//Book CLass.
 class Book {
 private:
     string title;
@@ -94,6 +140,8 @@ public:
 
 };
 
+
+//Library Class.
 class Library {
 private:
     Book* head;
@@ -114,33 +162,33 @@ public:
     }
 
     //Return a Book Method.
-    void returnBook(string& title, string& author, int& year) {
+    void returnBook(const string& title,const string& author,const int& year) {
         Book* newBook = new Book(title, author, year);
 
         if (!head) {
             head = newBook;
         } else {
             Book* temp = head;
+
             while (temp->next) {
                 temp = temp->next;
             }
             temp->next = newBook;
         }
-        cout << "Book has been returned." << endl;
     }
 
     //Borrow a Book Method.
-    void borrowBook(string& title, string& author, int& year) {
+    void borrowBook(const string& title,const string& author,const int& year) {
 
         if (!head) {
-            cout<<"Library is Empty.";
+            cout<<"Library is Empty.\n";
             return;
         }
 
         Book* temp = head;
         Book* prev = nullptr;
 
-        while (!temp) {
+        while (temp) {
             if (temp->getTitle() == title && temp->getAuthor() == author && temp->getYear() == year) {
                 if (!prev) {
                     head = temp -> next;
@@ -149,134 +197,136 @@ public:
                 }
 
                 delete temp;
-                cout << "Book has been borrowed." << endl;
                 return;
             }
             prev = temp;
             temp = temp -> next;
         }
 
-        cout<<"Book not found.";
+        cout<<"Book not found.\n";
     }
 
 
     //Display all Books.
     void displayBooks() {
         if (!head) {
-            cout<<"Library is empty.";
+            cout<<"Library is empty.\n";
             return;
         }
 
         Book* temp = head;
-        cout<<"Displaying Books in the Library.\n";
-        while (!temp) {
-            cout<<"Book1:\n   "<<temp->getTitle()<<"\n   "<<temp->getAuthor()<<"\n   "<<temp->getYear();
-            temp = temp -> next;
+        cout<<"Displaying Books in the Library.\n\n";
+        while (temp) {
+            cout << " Book:" << endl;
+            cout << "   Title: " << temp->getTitle() << endl;
+            cout << "   Author: " << temp->getAuthor() << endl;
+            cout << "   Year: " << temp->getYear() << endl<<endl;
+            temp = temp->next;
         }
     }
 };
 
 
-
 //Inheriting the User class.
-class Student : User{
+class Student : public User{
 private:
     Library library;
 
 public:
-
-    //Parametrized Constructor.
-    Student (string username, string password) : User(username, password) {};
+    //Default Constructor.
+    Student () : User() {
+        setCredentials();
+    };
 
     //Destructor.
     ~Student () = default;
 
     //Implement the pure virtual function login.
-    bool login(string uname, string pwd) override {
-        return (username == uname && password == pwd);
-    }
+    bool login() override {
+        return (username == "student" && password == "student123");
+    };
 
-    //Setters.
-    void setUsername(string username) {
-        this->username = username;
-    }
-
-    void setPassword(string password) {
-        this->password = password;
-    }
-
-    //Getters.
-    string getUsername() {
-        return username;
-    }
-
-    string getPassword() {
-        return password;
-    }
-
-
+    // Method to add a book to the library
+    void addBook(const string& title, const string& author, const int& year) {
+        library.returnBook(title, author, year);
+    };
 
     //Additional Methods for Student Class.
     void borrowBook() {
         string title;
-        cout<<"Enter name of the Book: ";
-        cin>>title;
-
         string author;
-        cout<<"Enter name of the Author: ";
-        cin>>author;
-
         int year;
-        cout<<"Enter the year of publication: ";
-        cin>>year;
+
+        cin.ignore();
+
+        cout<<"Enter name of the Book: ";
+        getline(cin, title);
+        cout<<endl;
 
         if (title.empty()) {
             cout << "Title can't be empty." << endl;
-            exit(EXIT_FAILURE);
+            return;
         }
+
+        cout<<"Enter name of the Author: ";
+        getline(cin, author);
+        cout<<endl;
 
         if (author.empty()) {
             cout << "Author name can't be empty." << endl;
-            exit(EXIT_FAILURE);
+            return;
         }
 
+        cout<<"Enter the year of publication: ";
+        cin>>year;
+        cout<<endl;
+
         if (year< 1900 || year > 2024) {
-            cout << "Year must be of from 1900-2024." << endl;
-            exit(EXIT_FAILURE);
+            cout << "Year must be from 1900-2024." << endl;
+            return;
         }
 
         library.borrowBook(title, author, year);
+        cout<<"The Book has been Borrowed."<<endl;
     }
 
     void returnBook() {
         string title;
-        cout<<"Enter name of the Book: ";
-        cin>>title;
-
         string author;
-        cout<<"Enter name of the Author: ";
-        cin>>author;
-
         int year;
-        cout<<"Enter the year of publication: ";
-        cin>>year;
+
+        cin.ignore();
+
+        cout<<"Enter name of the Book: ";
+        getline(cin, title);
+        cout<<endl;
 
         if (title.empty()) {
             cout << "Title can't be empty." << endl;
-            exit(EXIT_FAILURE);
+            return;
         }
+
+        cout<<"Enter name of the Author: ";
+        getline(cin, author);
+        cout<<endl;
 
         if (author.empty()) {
             cout << "Author name can't be empty." << endl;
-            exit(EXIT_FAILURE);
+            return;
         }
+
+        cout<<"Enter the year of publication: ";
+        cin>>year;
+        cout<<endl;
 
         if (year< 1900 || year > 2024) {
-            cout << "Year must be of from 1900-2024." << endl;
-            exit(EXIT_FAILURE);
+            cout << "Year must be from 1900-2024." << endl;
+            return;
         }
 
+
         library.returnBook(title, author, year);
+        cout<<"The Book has been Returned."<<endl;
     }
 
     void displayBooks() {
@@ -285,26 +335,91 @@ public:
 
     void displayProfile() {
         cout<<"Displaying User Profile..."<<endl;
-        cout<<"Username: "<<username<<endl;
-        cout<<"Password: "<<password<<endl;
+        cout<<"  Username: "<<username<<endl;
+        cout<<"  Password: "<<password<<endl;
+    }
+};
+
+void displayMainMenu() {
+    cout<< ("\n\n");
+    cout<< ("\t\t\t\t\t   ______________________________________________________________\n");
+    cout<< ("\t\t\t\t\t  |                                                             |\n");
+    cout<< ("\t\t\t\t\t  |                                                             |\n");
+    cout<< ("\t\t\t\t\t  |                                                             |\n");
+    cout<< ("\t\t\t\t\t  |                                                             |\n");
+    cout<< ("\t\t\t\t\t  |                         WELCOME                             |\n");
+    cout<< ("\t\t\t\t\t  |                           TO                                |\n");
+    cout<< ("\t\t\t\t\t  |                      Haseeb's Library                       |\n");
+    cout<< ("\t\t\t\t\t  |                                                             |\n");
+    cout<< ("\t\t\t\t\t  |                                                             |\n");
+    cout<< ("\t\t\t\t\t  |                                                             |\n");
+    cout<< ("\t\t\t\t\t  |                                                             |\n");
+    cout<< ("\t\t\t\t\t  |_____________________________________________________________|\n");
+
+    cout << "1. Borrow a Book" << endl;
+    cout << "2. Return a Book" << endl;
+    cout << "3. Display all Books" << endl;
+    cout << "4. Display Profile Info" << endl;
+    cout << "5. Return to Main Menu" << endl;
+    cout << "6. Exit" << endl;
+    cout << "---------------------------------------" << endl;
+    cout << "Enter your choice: ";
+};
+
+int main() {
+    loading();
+    setColor(14, 0);
+
+    //Creating an object of Student class.
+    Student student;
+
+    //Adding Some Books in the Library.
+    student.addBook("The Alchemist", "Paulo Coelho", 1988);
+    student.addBook("The Da Vinci Code", "Dan Brown", 2003);
+    student.addBook("The Great Gatsby", "F. Scott Fitzgerald", 1925);
+    student.addBook("The Catcher in the Rye", "J.D. Salinger", 1951);
+    student.addBook("The Hobbit", "J.R.R. Tolkien", 1937);
+
+    bool isLoggedin = student.login();
+
+    if (!isLoggedin) {
+        cout << "Login failed. Exiting program." << endl;
+        return EXIT_FAILURE;
     }
 
-    void changePassword() {
-        string newPassword;
-        cout<<"Enter New Password: ";
-        cin>>newPassword;
+    while (true) {
+        displayMainMenu();
+        int choice;
+        cin>>choice;
+        cout<<endl;
 
-        if (newPassword.length() < 8) {
-            cout << "Password must be atleast 8 characters long." << endl;
-            exit(EXIT_FAILURE);
+        switch (choice) {
+            case 1:
+                student.borrowBook();
+            break;
+
+            case 2:
+                student.returnBook();
+            break;
+
+            case 3:
+                student.displayBooks();
+            break;
+
+            case 4:
+                student.displayProfile();
+            break;
+
+            case 5:
+                cout << "Returning to Main Menu..." << endl;
+            break;
+
+            case 6:
+                cout << "Exiting program..." << endl;
+            return EXIT_SUCCESS;
+
+            default:
+                cout << "Invalid choice. Please try again." << endl;
         }
-
-        setPassword(newPassword);
-        cout<<"Password Changed Successfully."<<endl;
     }
-};
-
-
-int main () {
-
-};
+}
