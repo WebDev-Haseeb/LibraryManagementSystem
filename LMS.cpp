@@ -55,6 +55,7 @@ public:
     virtual bool login() = 0;
 };
 
+
 //Book Class.
 class Book {
     friend class Library;
@@ -81,6 +82,7 @@ public:
     ~Book() = default;
 };
 
+
 //Student Class just for LinkedList Initialization.
 class student : public User {
     friend class Library;
@@ -100,6 +102,51 @@ public:
     }
 };
 
+
+//Class to store History.
+class History {
+    friend class Library;
+
+protected:
+    string* arr;
+    int top;
+
+public:
+    //constructor.
+    History() {
+        arr = new string[10];
+        top = -1;
+    }
+
+    //Destructor.
+    ~History() = default;
+
+    void addHistory(string item) {
+        if (top == 9) {
+            for (int i = 0; i < 9; i++) {
+                arr[i] = arr[i + 1];
+            }
+            arr[top] = item;
+        } else {
+            arr[++top] = item;
+        }
+    }
+
+    void displayHistory() {
+        if (top == -1) {
+            cout << "No History Found." << endl;
+            return;
+        }
+
+        cout << "History: " << endl;
+        for (int i = 0; i <= top; i++) {
+            cout << "  " << arr[i] << endl;
+        }
+
+    }
+
+};
+
 //Library Class.
 class Library {
 
@@ -108,6 +155,10 @@ protected:
     student* sHead;
 
 public:
+    //Initializing History.
+    History searchHistory;
+    History borrowedHistory;
+
     //Default Constructor.
     Library() {
         bHead = nullptr;
@@ -157,6 +208,7 @@ public:
 
                 delete temp;
                 cout<<"\nBook has been Removed from the Library.\n";
+                borrowedHistory.addHistory(title);
                 return;
             }
             prev = temp;
@@ -168,7 +220,7 @@ public:
     //Method to display all Books.
     void displayBooks() {
         if (!bHead) {
-            cout << "Library is Empty." << endl;
+            cout << "Library is Empty.\n" << endl;
             return;
         }
 
@@ -180,6 +232,32 @@ public:
             cout << "  Year: " << temp->year << endl;
             cout << "----------------------" << endl;
             temp = temp->next;
+        }
+    }
+
+    //Method to search a Book.
+    void searchBook(string title) {
+        bool isFound = false;
+
+        if (!bHead) {
+            cout << "Library is Empty.\n" << endl;
+            return;
+        }
+
+        Book* temp = bHead;
+        while (temp) {
+            if (temp->title == title) {
+                cout << "\nBook: " << endl;
+                cout << "  Title: " << temp->title << endl;
+                cout << "  Author: " << temp->author << endl;
+                cout << "  Year: " << temp->year << endl;
+                isFound = true;
+                searchHistory.addHistory(title);
+            }
+            temp = temp->next;
+        }
+        if (!(isFound)) {
+            cout << "Book not found." << endl;
         }
     }
 
@@ -233,6 +311,16 @@ public:
         cout<<"Student not found.\n";
     }
 
+    //Method to display Borrowed History.
+    void displayBorrowedHistory() {
+        borrowedHistory.displayHistory();
+    }
+
+    //Method to display Search History.
+    void displaySearchHistory() {
+        searchHistory.displayHistory();
+    }
+
 };
 
 //Derived Student Class.
@@ -248,6 +336,11 @@ public:
     //Implement the pure virtual function login.
     bool login() override {
         return (username == "user" && password == "password");
+    }
+
+    //Method to add a book with parameters.
+    void addBook(string title, string author, int year) {
+        library.addBook(title, author, year);
     }
 
     //Method to borrow a Book.
@@ -326,6 +419,33 @@ public:
     //Method to display all Books.
     void displayBooks() {
         library.displayBooks();
+    }
+
+    //Method to search a Book.
+    void searchBook() {
+        string title;
+        cin.ignore();
+
+        cout << "\nEnter Title of the Book: ";
+        getline(cin, title);
+
+        while (title.empty()) {
+            cout<<"Title cannot be empty.\n";
+            cout << "\nEnter Title of the Book: ";
+            getline(cin, title);
+        }
+
+        library.searchBook(title);
+    }
+
+    //Method to display Borrowed History.
+    void displayBorrowedHistory() {
+        library.displayBorrowedHistory();
+    }
+
+    //Method to display Search History.
+    void displaySearchHistory() {
+        library.displaySearchHistory();
     }
 };
 
@@ -511,6 +631,16 @@ void displayLibrarianMainMenu() {
 
 //Main Function.
 int main() {
+    Student student;
+    Librarian librarian;
+
+    //Adding Books in Library.
+    student.addBook("The Alchemist", "Paulo Coelho", 1988);
+    student.addBook("The Da Vinci Code", "Dan Brown", 2003);
+    student.addBook("The Great Gatsby", "F. Scott Fitzgerald", 1925);
+    student.addBook("The Catcher in the Rye", "J.D. Salinger", 1951);
+    student.addBook("To Kill a Mockingbird", "Harper Lee", 1960);
+
         cout << "\n\n\n===================================================" << endl;
         cout << "       Welcome to the Library Management System!" << endl;
         cout << "=====================================================\n" << endl;
@@ -533,8 +663,6 @@ int main() {
 
         switch (choice) {
             case 1: {
-                Student student;
-
                 for (int i = 0; i < 3; i++) {
                     student.setCredentials();
                     if (student.login()) {
@@ -561,7 +689,7 @@ int main() {
                                     break;
                                 }
                                 case 3: {
-                                    cout << "Search a Book" << endl;
+                                    student.searchBook();
                                     break;
                                 }
                                 case 4: {
@@ -569,11 +697,11 @@ int main() {
                                     break;
                                 }
                                 case 5: {
-                                    cout << "Display Search History" << endl;
+                                    student.displaySearchHistory();
                                     break;
                                 }
                                 case 6: {
-                                    cout << "Display Borrowed History" << endl;
+                                    student.displayBorrowedHistory();
                                     break;
                                 }
                                 case 7: {
@@ -594,14 +722,14 @@ int main() {
                                 break; // Go back to the login menu
                             }
                         }
+                    } else {
+                        cout<<"Remaining Attempts:"<<(2-i)<<endl;
                     }
                 }
                 break;
             }
 
             case 2: {
-                Librarian librarian;
-
                 for (int i = 0; i < 3; i++) {
                     librarian.setCredentials();
                     if (librarian.login()) {
@@ -661,6 +789,8 @@ int main() {
                                 break; // Go back to the login menu
                             }
                         }
+                    } else {
+                        cout<<"Remaining Attempts:"<<(2-i)<<endl;
                     }
                 }
                 break;
