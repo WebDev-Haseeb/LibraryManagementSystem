@@ -147,6 +147,88 @@ public:
 
 };
 
+
+//Priority Queue Class.
+class PriorityBook {
+
+protected:
+    string* arr;
+    int front;
+    int rear;
+    int capacity;
+
+public:
+    //Default Constructor.
+    PriorityBook() {
+        capacity = 10;
+        arr = new string[capacity];
+        front = -1;
+        rear = -1;
+    }
+
+    //Destructor.
+    ~PriorityBook() {
+        delete[] arr;
+    }
+
+    // Method to resize the queue when full.
+    void resize() {
+        capacity *= 2;
+        string* newArr = new string[capacity];
+        int j = 0;
+        for (int i = front; i <= rear; ++i) {
+            newArr[j++] = arr[i];
+        }
+        delete[] arr;
+        arr = newArr;
+        front = 0;
+        rear = j - 1;
+    }
+
+    //Method to add book.
+    void addBook(string item) {
+        if (rear == 9) {
+            resize();
+        }
+
+        if (front == -1) {
+            front = 0;
+        }
+
+        arr[++rear] = item;
+    }
+
+    //Method to remove book.
+    void removeBook() {
+        if (front == -1) {
+            cout << "No Priority Books found!" << endl;
+            return;
+        }
+
+        if (front == rear) {
+            front = -1;
+            rear = -1;
+            return;
+        }
+
+        front++;
+    }
+
+    //Method to display all books.
+    void displayBooks() {
+        if (front == -1) {
+            cout << "Queue is Empty." << endl;
+            return;
+        }
+
+        cout << "Books: " << endl;
+        for (int i = front; i <= rear; i++) {
+            cout << "  " << arr[i] << endl;
+        }
+    }
+};
+
+
 //Library Class.
 class Library {
 
@@ -159,6 +241,9 @@ public:
     History searchHistory;
     History borrowedHistory;
 
+    //Initializing Priority Queue.
+    PriorityBook pb;
+
     //Default Constructor.
     Library() {
         bHead = nullptr;
@@ -168,6 +253,22 @@ public:
     //Destructor.
     ~Library() = default;
 
+    //Method to insert book (no validation).
+    void insertBook(string title, string author, int year) {
+        Book* newBook = new Book(title, author, year);
+
+        if (!bHead) {
+            bHead = newBook;
+            return;
+        }
+
+        Book* temp = bHead;
+        while (temp->next) {
+            temp = temp->next;
+        }
+
+        temp->next = newBook;
+    }
 
     //Method to add a Book.
     void addBook(string title, string author, int year) {
@@ -321,6 +422,16 @@ public:
         searchHistory.displayHistory();
     }
 
+    //Method to add a Book in Priority Queue.
+    void addPriorityBook(string title) {
+        pb.addBook(title);
+    }
+
+    //Method to display all Books in Priority Queue.
+    void displayPriorityBooks() {
+        pb.displayBooks();
+    }
+
 };
 
 //Derived Student Class.
@@ -338,9 +449,10 @@ public:
         return (username == "user" && password == "password");
     }
 
+
     //Method to add a book with parameters.
     void addBook(string title, string author, int year) {
-        library.addBook(title, author, year);
+        library.insertBook(title, author, year);
     }
 
     //Method to borrow a Book.
@@ -567,6 +679,29 @@ public:
 
         library.removeStudent(username, password);
     }
+
+    //Method to add a book to priority Queue.
+    void addPriorityBook() {
+        string title;
+        cin.ignore();
+
+        cout << "\nEnter Title of the Book: ";
+        getline(cin, title);
+
+        while (title.empty()) {
+            cout<<"Title cannot be empty.\n";
+            cout << "\nEnter Title of the Book: ";
+            getline(cin, title);
+        }
+
+        library.addPriorityBook(title);
+    }
+
+    //Method to display all Books in Priority Queue.
+    void displayPriorityBooks() {
+        library.displayPriorityBooks();
+    }
+
 };
 
 //Function to display Student Main Menu.
@@ -620,8 +755,8 @@ void displayLibrarianMainMenu() {
     cout << "2. Remove a Student" << endl;
     cout << "3. Add a Book" << endl;
     cout << "4. Remove a Book" << endl;
-    cout << "5. Display Search History" << endl;
-    cout << "6. Display Borrowed History" << endl;
+    cout << "5. Add a Book to Priority Queue" << endl;
+    cout << "6. Display Priority Queue Books" << endl;
     cout << "7. Return to Main Menu" << endl;
     cout << "8. Exit" << endl;
     cout << "---------------------------------------" << endl;
@@ -634,7 +769,7 @@ int main() {
     Student student;
     Librarian librarian;
 
-    //Adding Books in Library.
+    //Adding Books to the Library.
     student.addBook("The Alchemist", "Paulo Coelho", 1988);
     student.addBook("The Da Vinci Code", "Dan Brown", 2003);
     student.addBook("The Great Gatsby", "F. Scott Fitzgerald", 1925);
@@ -764,11 +899,11 @@ int main() {
                                     break;
                                 }
                                 case 5: {
-                                    cout << "Display Search History" << endl;
+                                    librarian.addPriorityBook();
                                     break;
                                 }
                                 case 6: {
-                                    cout << "Display Borrowed History" << endl;
+                                    librarian.displayPriorityBooks();
                                     break;
                                 }
                                 case 7: {
