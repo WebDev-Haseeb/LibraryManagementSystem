@@ -3,6 +3,6 @@ project(SemesterProject)
 
 set(CMAKE_CXX_STANDARD 26)
 
-add_executable(SemesterProject LMS.cpp
-        main.cpp
-        main.cpp)
+add_executable(SemesterProject
+        LMS.cpp
+        LMS.cpp)
