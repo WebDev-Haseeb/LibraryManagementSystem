@@ -5,4 +5,5 @@ set(CMAKE_CXX_STANDARD 26)
 
 add_executable(SemesterProject
         LMS.cpp
+        LMS.cpp
         LMS.cpp)

@@ -1,8 +1,15 @@
 #include <iostream>
+#include <windows.h>
 using namespace std;
 
-// Forward declarations
-class Library;
+// // Forward declarations
+// class Library;
+
+void setColor(int textColor, int bgColor) {
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hConsole, (bgColor << 4) | textColor);
+}
+
 
 //Abstract User Class.
 class User {
@@ -727,7 +734,7 @@ void displayStudentMainMenu() {
     cout << "4. Display all Books" << endl;
     cout << "5. Display Search History" << endl;
     cout << "6. Display Borrowed History" << endl;
-    cout << "7. Return to Main Menu" << endl;
+    cout << "7. Return to Previous Menu" << endl;
     cout << "8. Exit" << endl;
     cout << "---------------------------------------" << endl;
     cout << "Enter your choice: ";
@@ -757,7 +764,7 @@ void displayLibrarianMainMenu() {
     cout << "4. Remove a Book" << endl;
     cout << "5. Add a Book to Priority Queue" << endl;
     cout << "6. Display Priority Queue Books" << endl;
-    cout << "7. Return to Main Menu" << endl;
+    cout << "7. Return to Previous Menu" << endl;
     cout << "8. Exit" << endl;
     cout << "---------------------------------------" << endl;
     cout << "Enter your choice: ";
@@ -766,6 +773,8 @@ void displayLibrarianMainMenu() {
 
 //Main Function.
 int main() {
+    setColor(14,0);
+
     Student student;
     Librarian librarian;
 
@@ -840,7 +849,7 @@ int main() {
                                     break;
                                 }
                                 case 7: {
-                                    cout << "Returning to Main Menu..." << endl;
+                                    cout << "Returning to Previous Menu..." << endl;
                                     break;
                                 }
                                 case 8: {
@@ -907,7 +916,7 @@ int main() {
                                     break;
                                 }
                                 case 7: {
-                                    cout << "Returning to Main Menu..." << endl;
+                                    cout << "Returning to Previous Menu..." << endl;
                                     break;
                                 }
                                 case 8: {
